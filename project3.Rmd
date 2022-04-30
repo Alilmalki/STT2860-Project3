@@ -1,0 +1,86 @@
+---
+title: "Final Presentation"
+author: "Author: Ali Lmalki"
+date: "`r format(Sys.time(), '%B %d, %Y @ %I:%M %p')`"
+output: ioslides_presentation
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  comment = NA
+)
+```
+
+## Packages Used
+
+I used tidyverse for data manipulation and plotting.
+
+```{r, echo = TRUE}
+library(tidyverse)
+```
+
+
+## Olympic Games Dataset
+
+I compiled my dataset from [Kaggle](https://www.kaggle.com/datasets).
+
+The dataset was last updated March 14, 2022, so some of the values may have changed between that date and now. 
+
+**Variables in the Dataset:**
+
+* `Name`: Name of the athlete
+* `Sex`: Male (M) or Female (F)
+* `Age`: Age of the athlete
+* `Team` Country from which the athlete plays for
+* `Games`: The game in which the athlete participated in
+* `Year`: The year in which the athlete participated in
+* `Season`: The year in which the athlete participated in
+* `Sport`: The sport played by the athlete
+* `Medal`: 0 - No Medal 1 - Bronze Medal 2 - Silver Medal 3 - Gold Medal
+
+
+```{r}
+data <- read_csv("data/olympic_games.csv")
+```
+
+
+##
+
+```{r, fig.align = "center", fig.width = 7.5}
+data %>%
+filter(Medal > 0) %>%
+group_by(Team)%>%
+count()%>%
+rename(All_time_Medals = n)%>%
+arrange(All_time_Medals)%>%
+tail(10)%>%
+ggplot()+
+geom_col(aes(y= reorder(Team,All_time_Medals),fill=Team,x=All_time_Medals)) +
+  labs(title = "Top 10 countries with the Maximum number of medals", x = "Number of Medals", y = "Name of the Country")
+```
+
+This graph shows the top 10 countries with the highest number of medals. The United States is on top of the list followed by the Soviet Union.
+
+
+##
+
+```{r, fig.align = "center", fig.width = 9}
+data %>%
+filter(Medal > 0, Team == "Sweden") %>%
+group_by(Year)%>%
+count()%>%
+rename(Total = n) %>%
+ggplot() +
+geom_line(aes(x=Year,y = Total)) +
+labs(title = "Sweden Performance In Olympics over Time",
+    x= "Year",
+    y="Number of medals",
+    caption = "Data Source: Kaggle")
+```
+
+This graph depicts the evolution of Swedish atheles performance in the olympics. We can notice a decrease on their performance over the years.
+
+
